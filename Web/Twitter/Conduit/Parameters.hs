@@ -43,6 +43,7 @@ module Web.Twitter.Conduit.Parameters
        , HasUrlParam (..)
        , HasFullTextParam (..)
        , HasWithParam (..)
+       , HasTweetModeParam (..)
 
        , UserParam(..)
        , UserListParam(..)
@@ -103,6 +104,7 @@ defineHasParamClassString "location"
 defineHasParamClassURI "url"
 defineHasParamClassBool "full_text"
 defineHasParamClassString "with"
+defineHasParamClassString "tweet_mode"
 
 -- | converts 'UserParam' to 'HT.SimpleQuery'.
 --

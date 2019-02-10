@@ -72,6 +72,7 @@ deriveHasParamInstances ''StatusesMentionsTimeline
     , "trim_user"
     , "contributor_details"
     , "include_entities"
+    , "tweet_mode"
     ]
 
 data StatusesUserTimeline
@@ -97,6 +98,7 @@ deriveHasParamInstances ''StatusesUserTimeline
     , "exclude_replies"
     , "contributor_details"
     , "include_rts"
+    , "tweet_mode"
     ]
 
 data StatusesHomeTimeline
@@ -122,6 +124,7 @@ deriveHasParamInstances ''StatusesHomeTimeline
     , "exclude_replies"
     , "contributor_details"
     , "include_entities"
+    , "tweet_mode"
     ]
 
 data StatusesRetweetsOfMe
@@ -146,6 +149,7 @@ deriveHasParamInstances ''StatusesRetweetsOfMe
     , "trim_user"
     , "include_entities"
     , "include_user_entities"
+    , "tweet_mode"
     ]
 
 -- * Tweets
@@ -192,6 +196,7 @@ deriveHasParamInstances ''StatusesShowId
     , "include_my_retweet"
     , "include_entities"
     , "include_ext_alt_text"
+    , "tweet_mode"
     ]
 
 data StatusesDestroyId
@@ -210,6 +215,7 @@ destroyId status_id = APIRequestPost uri def
   where uri = endpoint ++ "statuses/destroy/" ++ show status_id ++ ".json"
 deriveHasParamInstances ''StatusesDestroyId
     [ "trim_user"
+    , "tweet_mode"
     ]
 
 data StatusesUpdate
@@ -236,6 +242,7 @@ deriveHasParamInstances ''StatusesUpdate
     , "display_coordinates"
     , "trim_user"
     , "media_ids"
+    , "tweet_mode"
     ]
 
 data StatusesRetweetId
@@ -282,6 +289,7 @@ deriveHasParamInstances ''StatusesUpdateWithMedia
     -- , "lat_long"
     -- , "place_id"
     , "display_coordinates"
+    , "tweet_mode"
     ]
 
 data StatusesLookup
@@ -305,4 +313,5 @@ deriveHasParamInstances ''StatusesLookup
     [ "include_entities"
     , "trim_user"
     , "map"
+    , "tweet_mode"
     ]
