@@ -1,3 +1,38 @@
+## 0.5.0 (wip)
+
+* Support for OverloadedLabels
+
+  `twitter-conduit` now supports the OverloadedLabels extensions for overloaded parameters in `APIRequest` (e.g.: `#count`, `#max_id`).
+
+  We can now write:
+
+  ```haskell
+  homeTimeline & #count ?~ 200
+  ```
+
+  instead of:
+
+  ```haskell
+  import qualified Web.Twitter.Conduit.Parameters as P
+
+  homeTimeline & P.count ?~ 200
+  ```
+
+  NOTE: See `Web.Twitter.Conduit.ParametersDeprecated` module if you would like to use classic value lenses.
+
+* Drop supports conduit < 1.3 and http-conduit < 2.3 [#69](https://github.com/himura/twitter-conduit/pull/69).
+* `Web.Twitter.Conduit.Status` is no longer re-exported by Web.Twitter.Conduit in order to avoid name conflictions (e.g. `update`, `lookup`) [#71](https://github.com/himura/twitter-conduit/pull/71).
+* Add alias for functions in `Web.Twitter.Conduit.Status` with statuses- prefix [#71](https://github.com/himura/twitter-conduit/pull/71).
+  (e.g. `Web.Twitter.Conduit.Api.statusesHomeTimeline` for `Web.Twitter.Conduit.Status.homeTimeline`)
+
+## 0.4.0
+
+* Follow direct message API changes [#65](https://github.com/himura/twitter-conduit/pull/65) [#62](https://github.com/himura/twitter-conduit/pull/62)
+* Changed WithCursor type [5b9e9d7a](https://github.com/himura/twitter-conduit/commit/5b9e9d7a13d33327fe637cae8e2359a38fce92b5)
+    * Added type parameter to WithCursor to supports `Text` as the next cursor type.
+    * Changed {previous,next}Cursor in WithCursor to be optional
+* Changed APIRequest type to take HTTP Method [f25fd9b3](https://github.com/himura/twitter-conduit/commit/f25fd9b3b860032f384d01b3457ea896e596366b)
+
 ## 0.3.0
 
 * Upgrade http-conduit dependencies to:

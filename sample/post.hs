@@ -1,11 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Web.Twitter.Conduit hiding (map)
+import Web.Twitter.Conduit
 import Common
 
-import Control.Applicative
-import Data.Monoid
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import System.Environment
@@ -16,5 +14,5 @@ main = do
     T.putStrLn $ "Post message: " <> status
     twInfo <- getTWInfoFromEnv
     mgr <- newManager tlsManagerSettings
-    res <- call twInfo mgr $ update status
+    res <- call twInfo mgr $ statusesUpdate status
     print res

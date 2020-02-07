@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE FlexibleContexts #-}
 
 module Main where
 
 import Web.Twitter.Conduit
-import qualified Web.Twitter.Conduit.Parameters as P
 import Web.Twitter.Types.Lens
 
 import Control.Lens
 import qualified Data.ByteString.Char8 as B8
-import qualified Data.Conduit as C
+import Data.Conduit
 import qualified Data.Conduit.List as CL
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
@@ -34,8 +34,9 @@ authorize oauth getPIN mgr = do
 
 getTWInfo :: Manager -> IO TWInfo
 getTWInfo mgr = do
-    cred <- authorize tokens getPIN mgr
-    return $ setCredential tokens cred def
+    Credential cred <- authorize tokens getPIN mgr
+    let cred' = filter (\(k, _) -> k == "oauth_token" || k == "oauth_token_secret") cred
+    return $ setCredential tokens (Credential cred') def
   where
     getPIN url = do
         putStrLn $ "browse URL: " ++ url
@@ -48,12 +49,15 @@ main = do
     mgr <- newManager tlsManagerSettings
     twInfo <- getTWInfo mgr
     putStrLn $ "# your home timeline (up to 800 tweets):"
-    sourceWithMaxId twInfo mgr (homeTimeline & P.count ?~ 200)
-        C.$= CL.isolate 800
-        C.$$ CL.mapM_ $ \status -> do
-            T.putStrLn $ T.concat [ T.pack . show $ status ^. statusId
-                                  , ": "
-                                  , status ^. statusUser . userScreenName
-                                  , ": "
-                                  , status ^. statusText
-                                  ]
+    runConduit $ sourceWithMaxId twInfo mgr (statusesHomeTimeline & #count ?~ 200)
+        .| CL.isolate 800
+        .| CL.mapM_
+            (\status -> do
+                 T.putStrLn $
+                     T.concat
+                         [ T.pack . show $ status ^. statusId
+                         , ": "
+                         , status ^. statusUser . userScreenName
+                         , ": "
+                         , status ^. statusText
+                         ])

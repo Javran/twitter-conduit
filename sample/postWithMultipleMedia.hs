@@ -1,8 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedLabels #-}
+
 module Main where
 
 import Web.Twitter.Conduit
-import qualified Web.Twitter.Conduit.Parameters as P
 import Web.Twitter.Types.Lens
 import Common
 
@@ -27,5 +28,5 @@ main = do
         putStrLn $ "Upload completed: media_id: " ++ ret ^. uploadedMediaId . to show ++ ", filepath: " ++ filepath
         return ret
     putStrLn $ "Post message: " ++ status
-    res <- call twInfo mgr $ update (T.pack status) & P.mediaIds ?~ (uploadedMediaList ^.. traversed .  uploadedMediaId)
+    res <- call twInfo mgr $ statusesUpdate (T.pack status) & #media_ids ?~ (uploadedMediaList ^.. traversed .  uploadedMediaId)
     print res

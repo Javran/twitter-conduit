@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PatternGuards #-}
 
@@ -6,13 +5,11 @@ import Web.Twitter.Conduit
 import Web.Twitter.Types.Lens
 import Common
 
-import Control.Applicative
 import Control.Lens
 import Control.Monad
 import Control.Monad.IO.Class
 import Control.Monad.Trans.Resource
 import Data.Conduit
-import qualified Data.Conduit as C
 import qualified Data.Conduit.Binary as CB
 import qualified Data.Conduit.List as CL
 import qualified Data.Text as T
@@ -39,11 +36,7 @@ main = do
     mgr <- newManager tlsManagerSettings
     runResourceT $ do
         src <- stream twInfo mgr userstream
-#if MIN_VERSION_http_conduit(2,3,0)
-        C.runConduit $ src C..| CL.mapM_ (liftIO . printTL)
-#else
-        src C.$$+- CL.mapM_ (liftIO . printTL)
-#endif
+        runConduit $ src .| CL.mapM_ (liftIO . printTL)
 
 showStatus :: AsStatus s => s -> T.Text
 showStatus s = T.concat [ s ^. user . userScreenName
@@ -85,13 +78,9 @@ fetchIcon sn url = do
     let fname = ipath </> sn ++ "__" ++ takeFileName url
     exists <- doesFileExist fname
     unless exists $ do
-        req <- parseUrl url
+        req <- parseRequest url
         mgr <- newManager tlsManagerSettings
         runResourceT $ do
             body <- http req mgr
-#if MIN_VERSION_http_conduit(2,3,0)
-            C.runConduit $ HTTP.responseBody body C..| CB.sinkFile fname
-#else
-            HTTP.responseBody body $$+- CB.sinkFile fname
-#endif
+            runConduit $ HTTP.responseBody body .| CB.sinkFile fname
     return fname
