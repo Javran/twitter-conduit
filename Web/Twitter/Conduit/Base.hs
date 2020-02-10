@@ -8,7 +8,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE IncoherentInstances #-}
 
 module Web.Twitter.Conduit.Base
        ( ResponseBodyType (..)
@@ -95,7 +94,7 @@ class ResponseBodyType a where
         -> ResourceT IO (Response a)
 
 type NoContent = ()
-instance ResponseBodyType NoContent where
+instance {-# OVERLAPPING #-} ResponseBodyType NoContent where
     parseResponseBody res =
         case responseStatus res of
             st | st == HT.status204 -> return $ void res
